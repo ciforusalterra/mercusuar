@@ -11,8 +11,8 @@ class NotifierRepository:
         self.session: Connection = session
 
     async def add_log(self, log: Log) -> Union[Log, bool]:
-        conn = await self.session.fetchval('''
+        result = await self.session.fetchval('''
             INSERT INTO log(status, message, created_date)
             VALUES ($1, $2, $3)
         ''', log.status, log.message, log.created_date)
-        return conn or False
+        return result or False
