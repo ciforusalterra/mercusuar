@@ -1,25 +1,10 @@
-import asyncio
 from datetime import datetime
 from unittest import TestCase, mock
 
+from lib.cpyasynctest.cpyasynctest import async_mock, run_async
+
 from notifier.model import Log
 from notifier.repository.development import NotifierRepository
-
-
-def _run(coro):
-    """Run the given coroutine."""
-    return asyncio.get_event_loop().run_until_complete(coro)
-
-
-def async_mock(*args, **kwargs):
-    """Mock as async"""
-    m = mock.MagicMock(*args, **kwargs)
-
-    async def mock_coro(*args, **kwargs):
-        return m(*args, **kwargs)
-
-    mock_coro.mock = m
-    return mock_coro
 
 
 class TestDevelopmentDatabase(TestCase):
@@ -50,7 +35,7 @@ class TestDevelopmentDatabase(TestCase):
         log.status = 'success'
         log.message = 'add xyz'
         log.created_date = datetime.now()
-        _run(self.notifier_repository.add_log(log))
+        run_async(self.notifier_repository.add_log(log))
         self.session.fetchval.mock.assert_called_once_with('''
             INSERT INTO log(status, message, created_date)
             VALUES ($1, $2, $3)
