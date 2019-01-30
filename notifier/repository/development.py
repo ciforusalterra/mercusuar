@@ -15,5 +15,4 @@ class NotifierRepository:
             INSERT INTO log(status, message, created_date)
             VALUES ($1, $2, $3)
         ''', log.status, log.message, log.created_date)
-        print(conn)
         return conn or False
